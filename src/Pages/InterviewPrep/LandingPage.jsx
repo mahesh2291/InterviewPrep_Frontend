@@ -46,7 +46,7 @@ const LandingPage=()=>{
   </svg>
 </label>
         </div>
-        <button  className="btn btn btn-success">Login/Signup</button>
+        <button onClick={()=>document.getElementById('my_modal_4').showModal()}  className="btn btn btn-success">Login/Signup</button>
         </div>
       </div>
       <div>
@@ -97,6 +97,26 @@ const LandingPage=()=>{
   </div>
 </div>
       </div>
+      <dialog id="my_modal_4" className="modal">
+  <div className="modal-box w-6/12 max-w-5xl">
+    {
+      currentPage==='login'? <Login /> : <SignUp />
+    }
+    <div className="text-center mt-5">
+    {
+      currentPage==='login'? <p>Dont have an account?<button onClick={()=>setCurrentPage('signup')} className="btn btn-danger ml-2">SignUp</button></p> : 
+      <p>Already have an account?<button onClick={()=>setCurrentPage('login')} className="btn btn-danger">Login</button></p>
+    }
+     
+     </div>
+    <div className="modal-action">
+      <form method="dialog">
+        {/* if there is a button, it will close the modal */}
+        <button onClick={()=>setCurrentPage('login')} className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+      </form>
+    </div>
+  </div>
+</dialog>
       </div>
     )
 }
