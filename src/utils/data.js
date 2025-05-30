@@ -11,11 +11,6 @@ export const APP_FEATURES = [
       description: 'Access tutorials, tips, and sample answers for common questions.',
     },
     {
-      id: '08',
-      title: 'Peer Review',
-      description: 'Collaborate with peers and exchange constructive feedback.',
-    },
-    {
       id: '09',
       title: 'Multi-role Support',
       description: 'Select from roles like Frontend, Backend, Data Science, and more.',

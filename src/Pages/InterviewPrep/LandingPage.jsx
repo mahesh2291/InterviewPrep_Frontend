@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { APP_FEATURES } from "../../utils/data";
+import Login from "../Auth/Login";
+import SignUp from "../Auth/SignUp";
 
 
 const LandingPage=()=>{
+
+  const [currentPage,setCurrentPage]=useState('login')
+
     return (
         <div>
         <div className="navbar bg-base-100 shadow-sm">
@@ -41,7 +46,7 @@ const LandingPage=()=>{
   </svg>
 </label>
         </div>
-        <button className="btn btn btn-success">Login/Signup</button>
+        <button  className="btn btn btn-success">Login/Signup</button>
         </div>
       </div>
       <div>
@@ -54,7 +59,11 @@ const LandingPage=()=>{
       Crack interviews with intelligent, personalized guidance.
       AI helps you learn faster, answer better, and stand out.
       </p>
-      <button className="btn btn-success btn-wide mt-5">Get Started</button>
+      <div className="w-full text-center">
+      <button className="btn btn-success btn-wide mt-5 shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+  Get Started
+</button>
+</div>
       <ul className="space-y-4 my-10">
        {
         APP_FEATURES.map((f)=>{
