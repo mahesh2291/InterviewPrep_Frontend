@@ -50,7 +50,7 @@ const LandingPage=()=>{
         </div>
       </div>
       <div>
-      <div className=" py-16 px-4 sm:px-6 lg:px-20">
+      <div className=" py-10 mt-30 px-4 sm:px-6 lg:px-20">
   <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
     {/* Left Side - Text */}
     <div>
@@ -98,7 +98,7 @@ const LandingPage=()=>{
 </div>
       </div>
       <dialog id="my_modal_4" className="modal">
-  <div className="modal-box w-6/12 max-w-5xl">
+  <div className="modal-box w-10/12 md:w-3/12 max-w-5xl">
     {
       currentPage==='login'? <Login /> : <SignUp />
     }
