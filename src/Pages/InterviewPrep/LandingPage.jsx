@@ -1,12 +1,31 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { APP_FEATURES } from "../../utils/data";
 import Login from "../Auth/Login";
 import SignUp from "../Auth/SignUp";
+import { useEffect } from "react";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATHS } from "../../utils/apiPaths";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser } from "../../Redux/userSlice";
+import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../context/userContext";
+import ProfileInfoCard from "../../components/Cards/ProfileInfoCard";
 
 
 const LandingPage=()=>{
 
   const [currentPage,setCurrentPage]=useState('login')
+  const {user}=useContext(UserContext)
+  const navigate=useNavigate()
+  
+  const loginChecker=()=>{
+      if(!user) {
+        document.getElementById('my_modal_4').showModal()
+      } else {
+        navigate('/dashboard')
+      }
+   
+  }
 
     return (
         <div>
@@ -15,7 +34,7 @@ const LandingPage=()=>{
           <a className="btn btn-ghost text-xl">Interview Prep</a>
         </div>
         <div className="flex gap-2">
-        <div className="mt-2">
+        <div className="mt-1.5 mr-4">
         <label className="flex cursor-pointer gap-2">
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +65,12 @@ const LandingPage=()=>{
   </svg>
 </label>
         </div>
-        <button onClick={()=>document.getElementById('my_modal_4').showModal()}  className="btn btn btn-success">Login/Signup</button>
+        {
+          user ?(
+            <ProfileInfoCard />
+          ) : <button onClick={()=>loginChecker()}  className="btn btn btn-success">Login/Signup</button>
+        }
+        
         </div>
       </div>
       <div>

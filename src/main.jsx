@@ -7,6 +7,6 @@ import appStore from './Redux/store.js'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Provider store={appStore}><App /></Provider>
+    <App />
   </StrictMode>,
 )
