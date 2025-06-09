@@ -11,5 +11,8 @@ export const API_PATHS={
         CREATE:"api/sessions/create",
         GET_BY_ID:(id)=>`api/sessions/${id}`,
         DELETE:(id)=>`api/sessions/${id}`
+    },
+    AI:{
+        GENERATE_QUESTIONS:'/api/ai/generate-questions'
     }
 }
