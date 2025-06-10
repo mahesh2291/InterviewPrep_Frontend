@@ -2,23 +2,28 @@ export const APP_FEATURES = [
     {
       id: '01',
       title: 'Tailored for You',
-      description: 'Get interview questions customized to your role and experience level.',
+      description: 'Role-Based Questions – Get interview questions tailored to your job role and experience.',
     },
    
     {
       id: '07',
       title: 'Resource Library',
-      description: 'Access tutorials, tips, and sample answers for common questions.',
+      description: 'AI Q&A Generator – Instantly create high-quality questions and answers with Gemini AI.',
     },
     {
       id: '09',
       title: 'Multi-role Support',
-      description: 'Select from roles like Frontend, Backend, Data Science, and more.',
+      description: 'AI Concept Explanations – Get instant, clear breakdowns of complex concepts.',
     },
     {
       id: '10',
       title: 'Dark Mode',
-      description: 'Enjoy a sleek and comfortable dark theme for long sessions.',
+      description: 'Pin for Later – Save key questions for quick and easy access anytime.',
+    },
+    {
+      id: '11',
+      title: 'Dark Mode',
+      description: 'Dark Mode Ready – Sleek, eye-friendly interface anytime.',
     }
   ];
   

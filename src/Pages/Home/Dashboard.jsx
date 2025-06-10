@@ -9,10 +9,12 @@ import { API_PATHS } from "../../utils/apiPaths";
 import SummaryCard from "../../components/Cards/SummaryCard";
 import moment from "moment"
 import CreateSessionForm from "./CreateSessionForm";
+import { useNavigate } from "react-router-dom";
 
 
 const Dashboard=()=>{
   const [sessions,setSessions]=useState([])
+  const navigate=useNavigate()
    const fetchAllSessions=async()=>{
       try {
         const response=await axiosInstance.get(API_PATHS.SESSIONS.GET_ALL)
@@ -43,7 +45,7 @@ const Dashboard=()=>{
                       ? moment(data.updatedAt).format("Do MMM YYYY") 
                       : ' '
                   }
-                  
+                  onSelect={()=>navigate(`/interview-prep/${data?._id}`)}
                 
                 />
             })
