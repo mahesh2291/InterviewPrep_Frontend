@@ -56,7 +56,7 @@ const InterviewPrep=()=>{
                           description={sessionData?.description || ""}
                           topicsToFocus={sessionData?.topicsToFocus || ""}
                           experience={sessionData?.experience || ""}
-                          questions={sessionData?.questions?.length || ""}
+                          questions={sessionData?.questions || ""}
                           lastUpdated = {
                               sessionData?.updatedAt 
                                 ? moment(sessionData.updatedAt).format("Do MMM YYYY") 
