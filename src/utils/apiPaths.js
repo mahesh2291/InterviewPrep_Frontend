@@ -18,6 +18,9 @@ export const API_PATHS={
     },
     TOGGLE_QUESTION:{
         PIN:(id)=>`api/questions/${id}/pin`
-    }
+    },
+    QUESTION:{
+        ADD_TO_SESSION:'api/questions/add'
+    },
 
 }

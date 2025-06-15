@@ -26,7 +26,7 @@ const RoleInfoHeader = ({
         {/* Badges for Meta Info */}
         <div className="flex flex-wrap gap-3 text-sm">
           <span className="badge badge-outline">
-            Experience: {experience} yrs
+            Experience: {experience} 
           </span>
           <span className="badge badge-outline">
             {questions?.length || 0} Q&A

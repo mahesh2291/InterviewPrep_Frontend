@@ -1,4 +1,5 @@
 import ProfileInfoCard from "../Cards/ProfileInfoCard"
+import { Link } from "react-router-dom"
 
 const Navbar=()=>{
     
@@ -6,7 +7,7 @@ const Navbar=()=>{
        <div>
          <div className="navbar bg-base-100 shadow-sm">
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl">Interview Prep</a>
+          <a className="btn btn-ghost text-xl"> <Link to='/dashboard'>Interview Prep</Link></a>
         </div>
         <div className="flex gap-2">
         <div className="mt-1.5 mr-4">

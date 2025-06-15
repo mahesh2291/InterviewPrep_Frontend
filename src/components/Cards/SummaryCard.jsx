@@ -1,12 +1,13 @@
 import { getInitials } from "../../utils/helper";
 
-const SummaryCard = ({ role, description, experience, lastUpdated, topicsToFocus, questions, onSelect }) => {
+const SummaryCard = ({ role, description, experience, lastUpdated, topicsToFocus, questions, onSelect, onDelete }) => {
   return (
     <div className="relative card w-96 bg-base-100 dark:bg-base-200 border border-base-300 dark:border-base-300 shadow-xl transition-transform hover:scale-105 duration-300" >
 
       {/* Close (X) Button */}
       <div className="absolute top-2 right-2" >
-        <button className="btn btn-square btn-sm btn-ghost hover:bg-error hover:text-white dark:hover:bg-error">
+        <button className="btn btn-square btn-sm btn-ghost hover:bg-error hover:text-white dark:hover:bg-error" onClick={()=>onDelete()}>
+          
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5"
@@ -35,7 +36,7 @@ const SummaryCard = ({ role, description, experience, lastUpdated, topicsToFocus
       <div className="p-4 space-y-2">
         <div className="flex gap-2 flex-wrap">
           <span className="badge badge-outline text-sm">
-            Experience: {experience} Years
+            Experience: {experience} 
           </span>
           <span className="badge badge-outline text-sm">
             {questions?.length || 0} Q&A

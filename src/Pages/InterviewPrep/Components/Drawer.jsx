@@ -99,37 +99,31 @@ const markdownComponents = {
 const Drawer = ({ title, explaination, onClose }) => {
     return (
       <div className="fixed inset-0 z-50 flex items-stretch">
-        
-        <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-        //   onClick={onClose} // enable backdrop close
-        />
-  
-        {/* Drawer panel */}
-        <div className="relative ml-auto w-full sm:w-[500px] lg:w-[640px] max-w-full h-full bg-base-200 text-base-content shadow-2xl border-l border-base-300 p-6 flex flex-col">
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-base-300 pb-4 mb-4">
-            <h2 className="text-2xl font-bold">{title}</h2>
-            <button
-              
-              className="btn btn-sm btn-circle btn-ghost text-base-content hover:bg-base-300 drawer-toggle h-5 w-5"
-              aria-label="Close drawer"
-            >X
-              {/* <X className="h-5 w-5" /> */}
-            </button>
-          </div>
-  
-          {/* Content */}
-          <div className="flex-1 overflow-y-auto text-sm leading-relaxed pr-1">
-            <ReactMarkdown
-              components={markdownComponents}
-              remarkPlugins={[remarkGfm]}
-            >
-              {explaination || "_No explanation provided._"}
-            </ReactMarkdown>
-          </div>
-        </div>
-      </div>
+  <div
+    className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+    // onClick={onClose} // enable backdrop close
+  />
+
+  {/* Drawer panel */}
+  <div className="relative ml-auto w-full sm:w-[500px] lg:w-[640px] max-w-full h-full bg-base-200 text-base-content shadow-2xl border-l border-base-300 p-6 flex flex-col">
+    {/* Header */}
+    <div className="flex items-center justify-between border-b border-base-300 pb-4 mb-4">
+      <h2 className="text-2xl font-bold">{title}</h2>
+      
+      
+    </div>
+
+    {/* Content */}
+    <div className="flex-1 overflow-y-auto text-sm leading-relaxed pr-1">
+      <ReactMarkdown
+        components={markdownComponents}
+        remarkPlugins={[remarkGfm]}
+      >
+        {explaination || "_No explanation provided._"}
+      </ReactMarkdown>
+    </div>
+  </div>
+</div>
     );
   };
 

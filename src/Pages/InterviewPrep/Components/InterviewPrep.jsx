@@ -9,6 +9,7 @@ import RoleInfoHeader from "../../../components/RoleInfoHeader";
 import QuestionCard from "../../../components/Cards/QuestionCard";
 import Skeleton from "../../../components/Loader/Skeleton";
 import Drawer from "./Drawer";
+import toast, { Toaster } from 'react-hot-toast';
 
 const InterviewPrep = () => {
   const { sessionId } = useParams();
@@ -62,7 +63,36 @@ const InterviewPrep = () => {
   };
 
   const uploadMoreQuestions = async () => {
-    // Future implementation for loading more questions
+     try {
+      setIsUpdateLoader(true)
+
+      const aiResponse=await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS,{
+          role:sessionData?.role,
+          experience:sessionData?.experience,
+          topicsToFocus:sessionData?.topicsToFocus,
+          numberOfQuestions:10
+      },{ timeout: 90000 })
+
+      const generatedQuestions=aiResponse.data
+       const response=await axiosInstance.post(API_PATHS.QUESTION.ADD_TO_SESSION,{
+        sessionId,
+        questions:generatedQuestions
+       })
+
+       if(response.data) {
+        toast.success("Added More Q&A!!")
+        fetchSessionDetailsById()
+       }
+
+     } catch (error) {
+       if(error.response && error.response.data.message) {
+        setError(error.response.data.message)
+       } else {
+         setError("something went wrong")
+       }
+     } finally {
+      setIsUpdateLoader(false)
+     }
   };
 
   useEffect(() => {
@@ -87,7 +117,7 @@ const InterviewPrep = () => {
       />
 
       <div className="container mx-auto pt-4 pb-4 px-4 md:px-0">
-        <h2 className="text-lg font-semibold text-black">Interview Q & A</h2>
+        <h2 className="text-lg font-semibold ml-10">Interview Q & A</h2>
 
         <div className="grid grid-cols-12 gap-4 mt-5 mb-10">
           <div className={`col-span-12 ${openLearMoreDrawer ? "md:col-span-7" : "md:col-span-8"}`}>
@@ -120,16 +150,26 @@ const InterviewPrep = () => {
                         onLearnMore={() => generateConceptExplaination(data?.question)}
                         onTogglePin={() => toggleQuestionPinStatus(data?._id)}
                       />
+
+                     
+                    
+
+
                     </motion.div>
+                    
                   );
                 })
               ) : (
                 <p className="text-sm text-gray-500 mt-4">No questions available.</p>
               )}
             </AnimatePresence>
+            <div className="flex justify-center mt-4">
+  <button className="btn btn-lg btn-success" onClick={()=>uploadMoreQuestions()}>{isUpdateLoader? <span className="loading loading-spinner loading-xl"></span>: "Load More Questions"}</button>
+</div>
           </div>
           <div className="drawer drawer-end">
   <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+  
   <div className="drawer-content">
     {/* Page content here */}
    
