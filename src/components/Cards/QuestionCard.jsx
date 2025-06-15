@@ -16,10 +16,10 @@ const markdownComponents = {
         return <>{children}</>;
       }
   
-      return <p className="mb-4 leading-6 dark:text-gray-200">{children}</p>;
+      return <p className="mb-4 leading-6">{children}</p>;
     },
     strong({ children }) {
-      return <strong className="font-semibold text-gray-900 dark:text-gray-100">{children}</strong>;
+      return <strong className="font-semibold text-gray-90 ">{children}</strong>;
     },
     em({ children }) {
       return <em className="italic">{children}</em>;
@@ -40,21 +40,26 @@ const markdownComponents = {
         </blockquote>
       );
     },
-    code({ inline, className = "", children, ...props }) {
-        const match = /language-(\w+)/.exec(className || "");
-        return !inline ? (
+    code({ inline, className = "", children }) {
+      const match = /language-(\w+)/.exec(className || "");
+      if (!inline) {
+        return (
           <pre
-            className="bg-gray-900 text-gray-100 rounded p-4 overflow-x-auto max-w-full"
-            style={{ whiteSpace: "pre", wordBreak: "break-word" }}
-          >
+          className="bg-gray-800 dark:bg-gray-900 text-gray-100 rounded-md px-4 py-3 overflow-x-auto text-sm leading-relaxed"
+          style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+        >
             <code className={`language-${match?.[1] ?? ""}`}>{children}</code>
           </pre>
-        ) : (
-          <code className="bg-gray-200 dark:bg-gray-700 rounded px-1 py-0.5 text-sm font-mono break-words">
-            {children}
-          </code>
         );
-      },
+      }
+    
+      return (
+        <code className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded px-1.5 py-0.5 text-[13px] font-mono break-words">
+          {children}
+        </code>
+      );
+    },
+    
     a({ href, children }) {
       return (
         <a
@@ -96,50 +101,52 @@ const markdownComponents = {
 
 const QuestionCard = ({ question, answer, onLearnMore, isPinned, onTogglePin }) => {
   const uniqueId = `question-checkbox-${Math.random().toString(36).substring(2, 9)}`;
-
+          console.log(isPinned)
   return (
     <div className="max-w-5xl mx-auto px-4 py-4">
       <div className="collapse collapse-arrow bg-base-100 border border-base-300 rounded-lg shadow-md w-full">
         <input type="checkbox" id={uniqueId} className="peer hidden" />
         <label
-          htmlFor={uniqueId}
-          className="collapse-title flex items-center cursor-pointer select-none gap-3 font-semibold text-lg text-gray-800 dark:text-gray-100"
-        >
-          <span className="text-indigo-600 dark:text-indigo-400 font-mono">Q:</span>
-          <span className="flex-1">{question}</span>
+  htmlFor={uniqueId}
+  className="collapse-title flex flex-wrap md:flex-nowrap items-start md:items-center justify-between gap-3 font-semibold text-lg dark:text-gray-100"
+>
+  <span className="text-indigo-600 dark:text-indigo-400 font-mono">Q:</span>
+  <div className="flex-1 break-words whitespace-pre-wrap text-wrap text-left">
+    {question}
+  </div>
 
-          <div className="ml-auto flex items-center gap-2  dark:text-gray-400">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onTogglePin();
-              }}
-              className="btn btn-ghost btn-sm p-1 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-700 transition-colors"
-              aria-label={isPinned ? "Unpin question" : "Pin question"}
-            >
-              <div className="tooltip" data-tip={isPinned ? "Unpin question" : "Pin question"}>
-                {isPinned ? <LuPinOff size={20} /> : <LuPin size={20} />}
-              </div>
-            </button>
+<div
+  onClick={(e) => e.stopPropagation()}
+  className="ml-4 flex items-center gap-2 shrink-0"
+>
+  <button
+    onClick={onTogglePin}
+    className="btn btn-ghost btn-sm p-1 rounded-md hover:bg-indigo-100 dark:hover:bg-indigo-700 transition-colors"
+    aria-label={isPinned ? "Unpin question" : "Pin question"}
+  >
+    <div className="tooltip" data-tip={isPinned ? "Unpin question" : "Pin question"}>
+      {isPinned ? <LuPinOff size={20} /> : <LuPin size={20} />}
+    </div>
+  </button>
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onLearnMore();
-              }}
-              className="btn btn-ghost btn-sm p-1 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-700 transition-colors"
-              aria-label="Learn more"
-            >
-              <div className="tooltip" data-tip="Learn More">
-                <LuSparkles size={20} className="text-yellow-500" />
-              </div>
-            </button>
-          </div>
+  <button
+    onClick={onLearnMore}
+    className="btn btn-ghost btn-sm p-1 rounded-md hover:bg-yellow-100 dark:hover:bg-yellow-700 transition-colors"
+    aria-label="Learn more"
+  >
+    <div className="tooltip" data-tip="Learn More">
+    <label htmlFor="my-drawer-4" className="drawer-button">
+    <LuSparkles size={20} className="text-yellow-500" />
+      </label>
+      
+    </div>
+  </button>
+</div>
         </label>
         <div
   role="region"
   aria-labelledby={uniqueId}
-  className="collapse-content prose prose-sm dark:prose-invert max-w-none leading-relaxed text-gray-700 dark:text-gray-300 transition-all duration-300 ease-in-out"
+  className="collapse-content prose prose-sm dark:prose-invert max-w-none leading-relaxed dark:text-gray-300 transition-all duration-300 ease-in-out break-words whitespace-pre-wrap max-h-[500px] overflow-y-auto"
 >
   <span className="text-indigo-600 dark:text-indigo-400 font-mono mr-1">A:</span>
   <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>

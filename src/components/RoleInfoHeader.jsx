@@ -10,7 +10,7 @@ const RoleInfoHeader = ({
   onSelect,
 }) => {
   return (
-    <div className="sticky top-16 z-40 mt-10 w-full bg-base-100 dark:bg-base-200 border-b border-base-300 shadow-md">
+    <div className="  mt-10 w-full bg-base-100 dark:bg-base-200 border-b border-base-300 shadow-md">
       <div className="relative px-6 py-5 md:px-12 flex flex-col gap-4">
 
        

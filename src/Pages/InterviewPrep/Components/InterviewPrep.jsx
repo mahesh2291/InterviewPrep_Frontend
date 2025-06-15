@@ -1,114 +1,153 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import moment from "moment"
-import {AnimatePresence,motion} from "framer-motion"
-import { LuCircleAlert,LuListCollapse } from "react-icons/lu";
-import { Toaster } from "react-hot-toast";
+import moment from "moment";
+import { AnimatePresence, motion } from "framer-motion";
 import DashboardLayout from "../../../components/Layouts/DashboardLayout";
 import { API_PATHS } from "../../../utils/apiPaths";
 import axiosInstance from "../../../utils/axiosInstance";
 import RoleInfoHeader from "../../../components/RoleInfoHeader";
 import QuestionCard from "../../../components/Cards/QuestionCard";
+import Skeleton from "../../../components/Loader/Skeleton";
+import Drawer from "./Drawer";
 
+const InterviewPrep = () => {
+  const { sessionId } = useParams();
+  const [sessionData, setSessionData] = useState(null);
+  const [error, setError] = useState("");
+  const [openLearMoreDrawer, setOpenLearnMoreDrawer] = useState(false);
+  const [explaination, setExplaination] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUpdateLoader, setIsUpdateLoader] = useState(false);
 
-const InterviewPrep=()=>{
-    const {sessionId}=useParams()
-    const [sessionData,setSessionData]=useState(null)
-    const [error,setError]=useState("")
-    const [openLearMoreDrawer,setOpenLearnMoreDrawer]=useState(false)
-    const [explaination,setExplaination]=useState(null)
-    const [isLoading,setIsLoading]=useState(false)
-    const [isUpdateLoader,setIsUpdateLoader]=useState(false)
-    
-    const fetchSessionDetailsById=async (sessionId)=>   {
-        try {
-        const response=await axiosInstance.get(API_PATHS.SESSIONS.GET_BY_ID(sessionId))
-       
-        if(response.data && response.data.session) {
-            setSessionData(response.data.session)
-        }
-
-      } catch (error) {
-        console.error("Error Fetching Data",error)
+  const fetchSessionDetailsById = async () => {
+    try {
+      const response = await axiosInstance.get(API_PATHS.SESSIONS.GET_BY_ID(sessionId));
+      if (response.data?.session) {
+        setSessionData(response.data.session);
       }
+    } catch (error) {
+      console.error("Error fetching session details:", error);
+      setError("Failed to fetch session data.");
     }
+  };
 
-    const generateConceptExplaination=async(question)=>{}
+  const generateConceptExplaination = async (question) => {
+    try {
+      setError("")
+      setExplaination(null)
+      setIsLoading(true)
+      const response = await axiosInstance.post(API_PATHS.AI.GENERATE_EXPLAINATION,{
+        question:question
+      });
+      if (response.data) {
+        setExplaination(response.data)
+      }
+      setIsLoading(false)
+    } catch (error) {
+      setIsLoading(false)
+      console.error("Error", error);
+      setError("Failed to fetch Explaination try again");
+    }
+  };
 
-    const toggleQuestionPinStatus=async(questionId)=>{}
+  const toggleQuestionPinStatus = async (questionId) => {
+    try {
+      const response = await axiosInstance.post(API_PATHS.TOGGLE_QUESTION.PIN(questionId));
+      if (response.data && response.data.question) {
+        fetchSessionDetailsById();
+      }
+    } catch (error) {
+      console.error("Error toggling pin status:", error);
+    }
+  };
 
-    const uploadMoreQuestions=async()=>{}
+  const uploadMoreQuestions = async () => {
+    // Future implementation for loading more questions
+  };
 
-    useEffect(()=>{
-        if(sessionId) {
-            fetchSessionDetailsById(sessionId)
+  useEffect(() => {
+    if (sessionId) {
+      fetchSessionDetailsById(sessionId);
+    }
+  }, [sessionId]);
+
+  return (
+    <DashboardLayout>
+      <RoleInfoHeader
+        role={sessionData?.role || ""}
+        description={sessionData?.description || ""}
+        topicsToFocus={sessionData?.topicsToFocus || ""}
+        experience={sessionData?.experience || ""}
+        questions={sessionData?.questions || ""}
+        lastUpdated={
+          sessionData?.updatedAt
+            ? moment(sessionData.updatedAt).format("Do MMM YYYY")
+            : ""
         }
+      />
 
-        return ()=>{}
-    },[])
+      <div className="container mx-auto pt-4 pb-4 px-4 md:px-0">
+        <h2 className="text-lg font-semibold text-black">Interview Q & A</h2>
 
-    
-    return (
-       <DashboardLayout>
-          <RoleInfoHeader
-            
-                   role={sessionData?.role || ""}
-                          description={sessionData?.description || ""}
-                          topicsToFocus={sessionData?.topicsToFocus || ""}
-                          experience={sessionData?.experience || ""}
-                          questions={sessionData?.questions || ""}
-                          lastUpdated = {
-                              sessionData?.updatedAt 
-                                ? moment(sessionData.updatedAt).format("Do MMM YYYY") 
-                                : ' ' }
-           
-          
-          />
-        <div className="container mx-auto pt-4 pb-4 px-4 md:px-0">
-            <h2 className="text-lg font-semibold color-black">Interview Q & A</h2>
-         <div className="grid grid-cols-12 gap-4 mt-5 mb-10">
-            <div className={`col-span-12 ${openLearMoreDrawer? "md:col-span-7" : "md:col-span-8"}`}>
-              <AnimatePresence>
-                {
-                    sessionData?.questions?.map((data,index)=>{
-                        return (
-                            <motion.div key={data._id  || index}
-                             initial={{opacity:0,y:-20}}
-                             animate={{opacity:1,y:0}}
+        <div className="grid grid-cols-12 gap-4 mt-5 mb-10">
+          <div className={`col-span-12 ${openLearMoreDrawer ? "md:col-span-7" : "md:col-span-8"}`}>
+            <AnimatePresence>
+              {sessionData?.questions?.length ? (
+                sessionData.questions.map((data, index) => {
+                  const questionId = data?._id || `index-${index}`;
+                  const isPinned = !!data?.isPinned;
 
-                             exit={{opacity:0,scale:0.95}}
-                             transition={{
-                                duration:0.4,
-                                type:'spring',
-                                stiffness:100,
-                                delay:index*0.1,
-                                damping:15
-                             }}
-                             layout
-                             layoutId={`question-${data._id || index}`}
-                            >
-                                <>
-                                <QuestionCard 
-                                   question={data?.question}
-                                   answer={data?.answer}
-                                   onLearnMore={()=>{
-                                     generateConceptExplaination(data.question)
-                                   }}
-                                   isPinned={data?.isPinned}
-                                   onTogglePin={()=>toggleQuestionPinStatus(data._id)}
-                                   />
-                                </>
+                  return (
+                    <motion.div
+                      key={questionId}
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{
+                        duration: 0.4,
+                        type: "spring",
+                        stiffness: 100,
+                        delay: index * 0.1,
+                        damping: 15,
+                      }}
+                      layout
+                      layoutId={`question-${questionId}`}
+                    >
+                      <QuestionCard
+                        question={data?.question || ""}
+                        answer={data?.answer || ""}
+                        isPinned={isPinned}
+                        onLearnMore={() => generateConceptExplaination(data?.question)}
+                        onTogglePin={() => toggleQuestionPinStatus(data?._id)}
+                      />
+                    </motion.div>
+                  );
+                })
+              ) : (
+                <p className="text-sm text-gray-500 mt-4">No questions available.</p>
+              )}
+            </AnimatePresence>
+          </div>
+          <div className="drawer drawer-end">
+  <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
+  <div className="drawer-content">
+    {/* Page content here */}
+   
+  </div>
+  <div className="drawer-side">
+    <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+    <ul className="menu bg-base-200 text-base-content min-h-full w-100 p-4">
+     {
+      isLoading? <Skeleton /> : <Drawer  title={!isLoading && explaination?.title} explaination={explaination?.explanation} />
+     }
+    </ul>
+  </div>
+</div>
+        </div>
+        
+      </div>
+    </DashboardLayout>
+  );
+};
 
-                            </motion.div>
-                        )
-                    })
-                }
-              </AnimatePresence>
-            </div>
-         </div>
-         </div>
-            </DashboardLayout>
-    )
-}
-
-export default InterviewPrep
+export default InterviewPrep;

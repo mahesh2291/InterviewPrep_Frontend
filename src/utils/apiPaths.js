@@ -13,6 +13,11 @@ export const API_PATHS={
         DELETE:(id)=>`api/sessions/${id}`
     },
     AI:{
-        GENERATE_QUESTIONS:'/api/ai/generate-questions'
+        GENERATE_QUESTIONS:'/api/ai/generate-questions',
+        GENERATE_EXPLAINATION:'/api/ai/generate-explaination'
+    },
+    TOGGLE_QUESTION:{
+        PIN:(id)=>`api/questions/${id}/pin`
     }
+
 }
