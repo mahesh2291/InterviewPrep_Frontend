@@ -113,7 +113,7 @@ const LandingPage=()=>{
     {/* Right Side - Image */}
     <div>
       <img
-        src="../../public/banner.png"
+        src="../../banner.png"
         alt="App Screenshot"
         className="rounded-xl shadow-2xl border border-gray-700"
       />
