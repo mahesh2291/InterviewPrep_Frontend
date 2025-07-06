@@ -46,7 +46,7 @@ const SummaryCard = ({ role, description, experience, lastUpdated, topicsToFocus
           </span>
         </div>
         <p className="text-sm text-base-content">
-          {description || "Preparing for frontend dev roles"}
+          {description || ""}
         </p>
       </div>
     </div>

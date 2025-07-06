@@ -38,7 +38,7 @@ const RoleInfoHeader = ({
 
         {/* Description */}
         <p className="text-sm text-base-content">
-          {description || "Preparing for frontend dev roles"}
+          {description || ""}
         </p>
       </div>
     </div>
