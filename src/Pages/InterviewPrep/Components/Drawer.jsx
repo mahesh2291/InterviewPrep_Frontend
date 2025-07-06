@@ -13,7 +13,7 @@ const markdownComponents = {
     );
   },
   strong({ children }) {
-    return <strong className="font-semibold text-gray-900">{children}</strong>;
+    return <strong className="font-semibold">{children}</strong>;
   },
   em({ children }) {
     return <em className="italic">{children}</em>;
@@ -101,10 +101,9 @@ const Drawer = ({ title, explaination, onClose }) => {
       <div className="fixed inset-0 z-50 flex items-stretch">
   <div
     className="fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
-    // onClick={onClose} // enable backdrop close
+    
   />
 
-  {/* Drawer panel */}
   <div className="relative ml-auto w-full sm:w-[500px] lg:w-[640px] max-w-full h-full bg-base-200 text-base-content shadow-2xl border-l border-base-300 p-6 flex flex-col">
     {/* Header */}
     <div className="flex items-center justify-between border-b border-base-300 pb-4 mb-4">

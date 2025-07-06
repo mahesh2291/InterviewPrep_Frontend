@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import moment from "moment";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useRef, useState, useEffect } from "react";
+import Drawer from "./Drawer";
+import Skeleton from "../../../components/Loader/Skeleton";
 import DashboardLayout from "../../../components/Layouts/DashboardLayout";
-import { API_PATHS } from "../../../utils/apiPaths";
-import axiosInstance from "../../../utils/axiosInstance";
 import RoleInfoHeader from "../../../components/RoleInfoHeader";
 import QuestionCard from "../../../components/Cards/QuestionCard";
-import Skeleton from "../../../components/Loader/Skeleton";
-import Drawer from "./Drawer";
-import toast, { Toaster } from 'react-hot-toast';
+import { API_PATHS } from "../../../utils/apiPaths";
+import axiosInstance from "../../../utils/axiosInstance";
+import moment from "moment";
+import { AnimatePresence, motion } from "framer-motion";
+import toast from "react-hot-toast";
+import { useParams } from 'react-router-dom';
 
 const InterviewPrep = () => {
   const { sessionId } = useParams();
+  const drawerRef = useRef(null);
   const [sessionData, setSessionData] = useState(null);
-  const [error, setError] = useState("");
-  const [openLearMoreDrawer, setOpenLearnMoreDrawer] = useState(false);
   const [explaination, setExplaination] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isUpdateLoader, setIsUpdateLoader] = useState(false);
+  const [error, setError] = useState("");
 
   const fetchSessionDetailsById = async () => {
     try {
@@ -34,20 +34,24 @@ const InterviewPrep = () => {
 
   const generateConceptExplaination = async (question) => {
     try {
-      setError("")
-      setExplaination(null)
-      setIsLoading(true)
-      const response = await axiosInstance.post(API_PATHS.AI.GENERATE_EXPLAINATION,{
-        question:question
+      setError("");
+      setExplaination(null);
+      setIsLoading(true);
+      const response = await axiosInstance.post(API_PATHS.AI.GENERATE_EXPLAINATION, {
+        question,
       });
+
       if (response.data) {
-        setExplaination(response.data)
+        setExplaination(response.data);
+        setTimeout(() => {
+          if (drawerRef.current) drawerRef.current.checked = true;
+        }, 50);
       }
-      setIsLoading(false)
     } catch (error) {
-      setIsLoading(false)
       console.error("Error", error);
-      setError("Failed to fetch Explaination try again");
+      setError("Failed to fetch Explaination, try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -63,41 +67,39 @@ const InterviewPrep = () => {
   };
 
   const uploadMoreQuestions = async () => {
-     try {
-      setIsUpdateLoader(true)
+    try {
+      setIsUpdateLoader(true);
+      const aiResponse = await axiosInstance.post(
+        API_PATHS.AI.GENERATE_QUESTIONS,
+        {
+          role: sessionData?.role,
+          experience: sessionData?.experience,
+          topicsToFocus: sessionData?.topicsToFocus,
+          numberOfQuestions: 10,
+        },
+        { timeout: 90000 }
+      );
 
-      const aiResponse=await axiosInstance.post(API_PATHS.AI.GENERATE_QUESTIONS,{
-          role:sessionData?.role,
-          experience:sessionData?.experience,
-          topicsToFocus:sessionData?.topicsToFocus,
-          numberOfQuestions:10
-      },{ timeout: 90000 })
-
-      const generatedQuestions=aiResponse.data
-       const response=await axiosInstance.post(API_PATHS.QUESTION.ADD_TO_SESSION,{
+      const generatedQuestions = aiResponse.data;
+      const response = await axiosInstance.post(API_PATHS.QUESTION.ADD_TO_SESSION, {
         sessionId,
-        questions:generatedQuestions
-       })
+        questions: generatedQuestions,
+      });
 
-       if(response.data) {
-        toast.success("Added More Q&A!!")
-        fetchSessionDetailsById()
-       }
-
-     } catch (error) {
-       if(error.response && error.response.data.message) {
-        setError(error.response.data.message)
-       } else {
-         setError("something went wrong")
-       }
-     } finally {
-      setIsUpdateLoader(false)
-     }
+      if (response.data) {
+        toast.success("Added More Q&A!!");
+        fetchSessionDetailsById();
+      }
+    } catch (error) {
+      setError(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setIsUpdateLoader(false);
+    }
   };
 
   useEffect(() => {
     if (sessionId) {
-      fetchSessionDetailsById(sessionId);
+      fetchSessionDetailsById();
     }
   }, [sessionId]);
 
@@ -120,7 +122,7 @@ const InterviewPrep = () => {
         <h2 className="text-lg font-semibold ml-10">Interview Q & A</h2>
 
         <div className="grid grid-cols-12 gap-4 mt-5 mb-10">
-          <div className={`col-span-12 ${openLearMoreDrawer ? "md:col-span-7" : "md:col-span-8"}`}>
+          <div className="col-span-12 md:col-span-8">
             <AnimatePresence>
               {sessionData?.questions?.length ? (
                 sessionData.questions.map((data, index) => {
@@ -150,41 +152,52 @@ const InterviewPrep = () => {
                         onLearnMore={() => generateConceptExplaination(data?.question)}
                         onTogglePin={() => toggleQuestionPinStatus(data?._id)}
                       />
-
-                     
-                    
-
-
                     </motion.div>
-                    
                   );
                 })
               ) : (
                 <p className="text-sm text-gray-500 mt-4">No questions available.</p>
               )}
             </AnimatePresence>
+
             <div className="flex justify-center mt-4">
-  <button className="btn btn-lg btn-success" onClick={()=>uploadMoreQuestions()}>{isUpdateLoader? <span className="loading loading-spinner loading-xl"></span>: "Load More Questions"}</button>
-</div>
+              <button className="btn btn-lg btn-success" onClick={uploadMoreQuestions}>
+                {isUpdateLoader ? (
+                  <span className="loading loading-spinner loading-xl"></span>
+                ) : (
+                  "Load More Questions"
+                )}
+              </button>
+            </div>
           </div>
+
+          {/* DaisyUI Drawer */}
           <div className="drawer drawer-end">
-  <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
-  
-  <div className="drawer-content">
-    {/* Page content here */}
-   
-  </div>
-  <div className="drawer-side">
-    <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-    <ul className="menu bg-base-200 text-base-content min-h-full w-100 p-4">
-     {
-      isLoading? <Skeleton /> : <Drawer  title={!isLoading && explaination?.title} explaination={explaination?.explanation} />
-     }
-    </ul>
-  </div>
-</div>
+            <input
+              id="my-drawer-4"
+              type="checkbox"
+              className="drawer-toggle"
+              ref={drawerRef}
+            />
+            <div className="drawer-content"></div>
+            <div className="drawer-side">
+              <label htmlFor="my-drawer-4" className="drawer-overlay" />
+              <ul className="menu bg-base-200 text-gray-800 dark:text-white min-h-full w-[640px] p-4">
+                {isLoading ? (
+                  <Skeleton />
+                ) : (
+                  <Drawer
+                    title={explaination?.title}
+                    explaination={explaination?.explanation}
+                    onClose={() => {
+                      if (drawerRef.current) drawerRef.current.checked = false;
+                    }}
+                  />
+                )}
+              </ul>
+            </div>
+          </div>
         </div>
-        
       </div>
     </DashboardLayout>
   );
